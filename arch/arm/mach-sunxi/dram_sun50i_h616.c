@@ -1370,6 +1370,8 @@ static void mctl_auto_detect_dram_size(const struct dram_para *para,
 	config->rows = 13;
 	mctl_core_init(para, config);
 
+	udelay(50);
+
 	shift = config->bus_full_width + 1;
 
 	/* detect column address bits */
@@ -1382,6 +1384,8 @@ static void mctl_auto_detect_dram_size(const struct dram_para *para,
 	/* reconfigure to make sure that all active rows are accessible */
 	config->rows = 18;
 	mctl_core_init(para, config);
+
+	udelay(50);
 
 	/* detect row address bits */
 	shift = config->bus_full_width + 4 + config->cols;
