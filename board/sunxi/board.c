@@ -574,6 +574,7 @@ static void sunxi_spl_store_dram_size(phys_addr_t dram_size)
 void sunxi_board_init(void)
 {
 	int power_failed = 0;
+	int power_volume = 0;
 	u8 data[2];
 
 #ifdef CONFIG_LED_STATUS
@@ -607,8 +608,15 @@ void sunxi_board_init(void)
 #endif
 #ifdef CONFIG_AXP_DCDC2_VOLT
 	power_failed |= axp_set_dcdc1(960);
+	power_volume = axp_get_dcdc(1);
+	// printf("vdd-gpu-dcdc1: %d\n", power_volume);
 	power_failed |= axp_set_dcdc2(CONFIG_AXP_DCDC2_VOLT);
+	power_volume = axp_get_dcdc(2);
+	// printf("vdd-cpu-dcdc2: %d\n", power_volume);
 	power_failed |= axp_set_dcdc3(CONFIG_AXP_DCDC3_VOLT);
+	power_volume = axp_get_dcdc(3);
+	// printf("vcc-dram-dcdc3: %d\n", power_volume);
+	udelay(200000);
 #endif
 #ifdef CONFIG_AXP_DCDC4_VOLT
 	power_failed |= axp_set_dcdc4(CONFIG_AXP_DCDC4_VOLT);

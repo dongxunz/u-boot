@@ -110,6 +110,39 @@ static int axp_set_dcdc(int dcdc_num, unsigned int mvolt)
 	return pmic_bus_setbits(reg->enable_reg, reg->enable_mask);
 }
 
+static int axp_cfg_to_mvolt(u8 cfg, const struct axp_reg_desc_spl *reg)
+{
+	if (cfg <= reg->split)
+		return (cfg * reg->step_mV + reg->min_mV);
+
+	return (cfg - reg->split) * (reg->step_mV * 2) + reg->split * reg->step_mV + reg->min_mV;
+}
+
+int axp_get_dcdc(int dcdc_num)
+{
+	const struct axp_reg_desc_spl *reg;
+	int ret;
+	u8 reg_value;
+
+	if (dcdc_num < 1 || dcdc_num > ARRAY_SIZE(axp_spl_dcdc_regulators))
+		return -EINVAL;
+
+	reg = &axp_spl_dcdc_regulators[dcdc_num - 1];
+
+
+	ret = pmic_bus_read(reg->enable_reg, &reg_value);
+	if (ret)
+		return -1;
+	if (!(reg_value & reg->enable_mask)) {
+		return 0;
+	}
+
+	ret = pmic_bus_read(reg->volt_reg, &reg_value);
+	if (ret)
+		return -1;
+	return axp_cfg_to_mvolt(reg_value, reg);
+}
+
 int axp_set_dcdc1(unsigned int mvolt)
 {
 	return axp_set_dcdc(1, mvolt);
