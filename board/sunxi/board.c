@@ -618,10 +618,11 @@ void sunxi_board_init(void)
 	// printf("vcc-dram-dcdc3: %d\n", power_volume);
 	power_failed |= axp_set_dcdc(4, 1800); // ALDO1
 	power_volume = axp_get_dcdc(4);
-	// printf("vcc-dram-dcdc4: %d\n", power_volume);
+	// printf("vcc-1.8v-aldo1: %d\n", power_volume);
 	power_failed |= axp_set_dcdc(5, 3300); // DLDO1
 	power_volume = axp_get_dcdc(5);
-	// printf("vcc-dram-dcdc5: %d\n", power_volume);
+	// printf("vcc-3.3v-dldo1: %d\n", power_volume);
+	udelay(50000);
 #endif
 #ifdef CONFIG_AXP_DCDC4_VOLT
 	power_failed |= axp_set_dcdc4(CONFIG_AXP_DCDC4_VOLT);

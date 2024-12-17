@@ -1313,9 +1313,16 @@ static bool mctl_ctrl_init(const struct dram_para *para,
 static bool mctl_core_init(const struct dram_para *para,
 			   const struct dram_config *config)
 {
+	bool ret;
+	dsb();
 	mctl_sys_init(para->clk);
+	dsb();
+	udelay(100);
+	ret = mctl_ctrl_init(para, config);
+	dsb();
+	udelay(200);
 
-	return mctl_ctrl_init(para, config);
+	return ret;
 }
 
 static void mctl_auto_detect_rank_width(const struct dram_para *para,
@@ -1370,8 +1377,6 @@ static void mctl_auto_detect_dram_size(const struct dram_para *para,
 	config->rows = 13;
 	mctl_core_init(para, config);
 
-	udelay(50);
-
 	shift = config->bus_full_width + 1;
 
 	/* detect column address bits */
@@ -1384,8 +1389,6 @@ static void mctl_auto_detect_dram_size(const struct dram_para *para,
 	/* reconfigure to make sure that all active rows are accessible */
 	config->rows = 18;
 	mctl_core_init(para, config);
-
-	udelay(50);
 
 	/* detect row address bits */
 	shift = config->bus_full_width + 4 + config->cols;
