@@ -41,6 +41,7 @@ enum {
 };
 
 int axp_get_dcdc(int dcdc_num);
+int axp_set_dcdc(int dcdc_num, unsigned int mvolt);
 int axp_set_dcdc1(unsigned int mvolt);
 int axp_set_dcdc2(unsigned int mvolt);
 int axp_set_dcdc3(unsigned int mvolt);

@@ -607,16 +607,21 @@ void sunxi_board_init(void)
 	power_failed |= axp_set_dcdc5(CONFIG_AXP_DCDC5_VOLT);
 #endif
 #ifdef CONFIG_AXP_DCDC2_VOLT
-	power_failed |= axp_set_dcdc1(960);
+	power_failed |= axp_set_dcdc(1, 960);
 	power_volume = axp_get_dcdc(1);
 	// printf("vdd-gpu-dcdc1: %d\n", power_volume);
-	power_failed |= axp_set_dcdc2(CONFIG_AXP_DCDC2_VOLT);
+	power_failed |= axp_set_dcdc(2, CONFIG_AXP_DCDC2_VOLT);
 	power_volume = axp_get_dcdc(2);
 	// printf("vdd-cpu-dcdc2: %d\n", power_volume);
-	power_failed |= axp_set_dcdc3(CONFIG_AXP_DCDC3_VOLT);
+	power_failed |= axp_set_dcdc(3, CONFIG_AXP_DCDC3_VOLT);
 	power_volume = axp_get_dcdc(3);
 	// printf("vcc-dram-dcdc3: %d\n", power_volume);
-	udelay(200000);
+	power_failed |= axp_set_dcdc(4, 1800); // ALDO1
+	power_volume = axp_get_dcdc(4);
+	// printf("vcc-dram-dcdc4: %d\n", power_volume);
+	power_failed |= axp_set_dcdc(5, 3300); // DLDO1
+	power_volume = axp_get_dcdc(5);
+	// printf("vcc-dram-dcdc5: %d\n", power_volume);
 #endif
 #ifdef CONFIG_AXP_DCDC4_VOLT
 	power_failed |= axp_set_dcdc4(CONFIG_AXP_DCDC4_VOLT);

@@ -42,6 +42,8 @@ static const struct axp_reg_desc_spl axp_spl_dcdc_regulators[] = {
 	{ 0x10, BIT(0), 0x13, 0x7f,  500, 1540,  10, 70 },
 	{ 0x10, BIT(1), 0x14, 0x7f,  500, 1540,  10, 70 },
 	{ 0x10, BIT(2), 0x15, 0x7f,  500, 1840,  10, 70 },
+	{ 0x10, BIT(3), 0x16, 0x1f,  500, 3500,  100, 30 }, // ALDO1
+	{ 0x10, BIT(4), 0x17, 0x1f,  500, 3500,  100, 30 }, // DLDO1
 };
 
 #define AXP_CHIP_VERSION	0x3
@@ -90,7 +92,7 @@ static u8 axp_mvolt_to_cfg(int mvolt, const struct axp_reg_desc_spl *reg)
 	return reg->split + mvolt / (reg->step_mV * 2);
 }
 
-static int axp_set_dcdc(int dcdc_num, unsigned int mvolt)
+int axp_set_dcdc(int dcdc_num, unsigned int mvolt)
 {
 	const struct axp_reg_desc_spl *reg;
 	int ret;
