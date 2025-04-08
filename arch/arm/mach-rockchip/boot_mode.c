@@ -83,8 +83,11 @@ void rockchip_dnl_mode_check(void)
 		// set_back_to_bootrom_dnl_flag();
 		// do_reset(NULL, 0, 0, NULL);
 
-		printf("\r\nloader mode...\r\n");
-		run_command("rockusb 0 mmc 0", 0);
+		// printf("\r\nloader mode...\r\n");
+		// run_command("rockusb 0 mmc 0", 0);
+
+		printf("\r\nums mode...\r\n");
+		run_command("ums 0 mmc 0", 0);
 	}
 }
 
