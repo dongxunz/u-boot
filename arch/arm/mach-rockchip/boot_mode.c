@@ -78,8 +78,13 @@ void rockchip_dnl_mode_check(void)
 {
 	if (rockchip_dnl_key_pressed()) {
 		printf("download key pressed, entering download mode...");
-		set_back_to_bootrom_dnl_flag();
-		do_reset(NULL, 0, 0, NULL);
+
+		// printf("\r\nmaskrom mode...\r\n");
+		// set_back_to_bootrom_dnl_flag();
+		// do_reset(NULL, 0, 0, NULL);
+
+		printf("\r\nloader mode...\r\n");
+		run_command("rockusb 0 mmc 0", 0);
 	}
 }
 
