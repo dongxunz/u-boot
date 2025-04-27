@@ -12,7 +12,6 @@
 #include <dm/device.h>
 #include <dm/uclass.h>
 #include <linux/printk.h>
-#include <mmc.h>
 
 #if (CONFIG_ROCKCHIP_BOOT_MODE_REG == 0)
 
@@ -77,11 +76,6 @@ __weak int rockchip_dnl_key_pressed(void)
 
 void rockchip_dnl_mode_check(void)
 {
-	int ums_to_emmc = 1;
-	int emmc_dev = 0; // eMMC dev index is 0
-	int ret = 0;
-	struct mmc *mmc = NULL;
-
 	if (rockchip_dnl_key_pressed()) {
 		printf("download key pressed, entering download mode...\n");
 
@@ -92,35 +86,14 @@ void rockchip_dnl_mode_check(void)
 		// printf("\nloader mode...\n");
 		// run_command("rockusb 0 mmc 0", 0);
 
-		// printf("\nums mode...\n");
-		// run_command("ums 0 mmc 0", 0);
-
-		mmc = find_mmc_device(0);
-		if (!mmc) {
-			printf("boot_mode: no mmc device at slot %x\n", emmc_dev);
-			ums_to_emmc = 0;
-		} else if (mmc_init(mmc)){
-			printf("boot_mode: mmc_init failed at slot %x\n", emmc_dev);
-			ums_to_emmc = 0;
-		} else if (mmc->bus_width != 8){
-			// If the user set eMMC-EN to "ON", it means using NVMe
-			printf("boot_mode: mmc[%d]->bus_width: %d\n", emmc_dev, mmc->bus_width);
-			ums_to_emmc = 0;
-		}
-		printf("ums mode: %s\n", ums_to_emmc ? "eMMC" : "NVMe");
-		if (ums_to_emmc) {
-			ret = run_command("ums 0 mmc 0", 0);
-		} else {
-			ret = run_command("pci enum; nvme scan; ums 0 nvme 0", 0);
-			if (ret) {
-				printf("ums NVMe failed: %d, ums to eMMC now!\n", ret);
-				ret = run_command("ums 0 mmc 0", 0);
+		printf("boot_mode: ums NVMe...\n");
+		if (run_command("pci enum; nvme scan; ums 0 nvme 0", 0)) {
+			printf("boot_mode: ums NVMe failed! ums to eMMC now!\n");
+			if (run_command("ums 0 mmc 0", 0)) {
+				printf("boot_mode: ums eMMC failed! goto maskrom mode...\n");
+				set_back_to_bootrom_dnl_flag();
+				do_reset(NULL, 0, 0, NULL);
 			}
-		}
-		if (ret) {
-			printf("ums failed: %d, goto maskrom mode...\n", ret);
-			set_back_to_bootrom_dnl_flag();
-			do_reset(NULL, 0, 0, NULL);
 		}
 	}
 }
