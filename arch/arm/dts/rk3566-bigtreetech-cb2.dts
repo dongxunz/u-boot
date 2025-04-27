@@ -412,6 +412,20 @@
 	status = "okay";
 };
 
+&combphy1 {
+	/* Used for USB3 */
+	status = "okay";
+
+	phy-supply = <&vcc3v3_sys>;
+};
+
+&combphy2 {
+	/* used for SATA */
+	status = "okay";
+
+	phy-supply = <&vcc3v3_sys>;
+};
+
 &pcie2x1 {
 	reset-gpios = <&gpio1 RK_PB2 GPIO_ACTIVE_HIGH>;
 	pinctrl-names = "default";
