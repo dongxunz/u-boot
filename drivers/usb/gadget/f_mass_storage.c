@@ -1092,7 +1092,7 @@ static int do_verify(struct fsg_common *common)
 static int do_inquiry(struct fsg_common *common, struct fsg_buffhd *bh)
 {
 	struct fsg_lun *curlun = &common->luns[common->lun];
-	static const char vendor_id[] = "CB2-eMMC";
+	static const char vendor_id[] = "CB2-UMS ";
 	u8	*buf = (u8 *) bh->buf;
 
 	if (!curlun) {		/* Unsupported LUNs are okay */
